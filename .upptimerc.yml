@@ -1,0 +1,128 @@
+# YinwuRealm 监测配置。维护：Soidraw。
+# 当前只监测和记录故障；GitHub 令牌在仓库 Actions Secrets 中填写。
+owner: YinwuPotato
+repo: yinwurealm-status
+user-agent: Soidraw
+
+sites:
+  - name: YinwuRealm 官网
+    slug: website
+    url: https://www.yinwurealm.org/
+    method: GET
+    expectedStatusCodes:
+      - 200
+    maxResponseTime: 10000
+    # 同时检查正文，避免把返回 200 的空白页计为正常。
+    __dangerous__body_down_if_text_missing: YinwuRealm
+    icon: https://yinwupotato.github.io/yinwurealm-status/yinwurealm-icon.png
+
+assignees:
+  - Soidraw
+
+# 暂不启用邮件或 Discord 通知。
+# GH_PAT 由官方工作流单独传入，不受这个空白名单影响。
+secrets: []
+
+# 保留短暂故障的 Issue，恢复后关闭，不删除。
+skipDeleteIssues: true
+
+# 主调度由 cloudflare/worker.mjs 完成：每五分钟检测一次。
+# GitHub 原生定时保留作备用；uptime 降为每日一次，避免恢复后双倍检测。
+# 以下维护任务的时刻与 Worker 一致；API 调度不要求原生 schedule 生效。
+workflowSchedule:
+  uptime: "1 4 * * *"
+  responseTime: "17 */6 * * *"
+  summary: "25 0 * * *"
+  graphs: "35 0 * * *"
+  staticSite: "45 0 * * *"
+  updateTemplate: "15 3 * * 1"
+  updates: "30 3 * * *"
+
+# 不让自动任务修改仓库元数据，令牌无需为此增加管理权限。
+skipDescriptionUpdate: true
+skipTopicsUpdate: true
+skipHomepageUpdate: true
+
+status-website:
+  baseUrl: /yinwurealm-status
+  name: YinwuRealm 服务状态
+  # assets 在页面导出后才复制；使用本站完整网址，避免导出器把图片误建成页面目录。
+  logoUrl: https://yinwupotato.github.io/yinwurealm-status/yinwurealm-icon.png
+  favicon: https://yinwupotato.github.io/yinwurealm-status/yinwurealm-icon.png
+  introTitle: "YinwuRealm 服务状态"
+  introMessage: "查看官网可用性、响应时间和故障记录。状态来自定期检测，短暂故障可能发生在两次检测之间。"
+  navbar:
+    - title: 服务状态
+      href: /yinwurealm-status/
+    - title: 官网
+      href: https://www.yinwurealm.org/
+    - title: 故障记录
+      href: https://github.com/YinwuPotato/yinwurealm-status/issues
+
+i18n:
+  locale: zh-CN
+  activeIncidents: 当前故障
+  allSystemsOperational: 所有服务运行正常
+  incidentReport: "查看第 $NUMBER 号故障记录 →"
+  activeIncidentSummary: "$DATE 开始，共 $POSTS 条更新"
+  incidentTitle: "第 $NUMBER 号故障详情"
+  incidentDetails: 故障详情
+  incidentFixed: 已恢复
+  incidentOngoing: 处理中
+  incidentOpenedAt: 开始时间
+  incidentClosedAt: 恢复时间
+  incidentViewOnGitHub: 在 GitHub 查看并订阅
+  incidentCommentSummary: "$AUTHOR 于 $DATE 发布"
+  incidentBack: "← 返回故障记录"
+  pastIncidents: 历史故障
+  pastIncidentsResolved: "持续 $MINUTES 分钟，共 $POSTS 条更新"
+  liveStatus: 当前状态
+  overallUptime: "总体可用率：$UPTIME"
+  overallUptimeTitle: 总体可用率
+  averageResponseTime: "平均响应时间：$TIME 毫秒"
+  averageResponseTimeTitle: 平均响应时间
+  sevelDayResponseTime: 近七天响应时间
+  responseTimeMs: 响应时间（毫秒）
+  up: 正常
+  down: 无法访问
+  degraded: 响应较慢
+  ms: 毫秒
+  loading: 加载中
+  navGitHub: GitHub
+  footer: "本页[开放源码]($REPO)，由 [Upptime](https://upptime.js.org) 提供监测。"
+  rateLimitExceededTitle: 暂时无法读取最新记录
+  rateLimitExceededIntro: GitHub API 请求次数已达到限制，请稍后再试。
+  rateLimitExceededWhatDoesErrorMean: 为什么出现这个提示？
+  rateLimitExceededErrorMeaning: 状态页从 GitHub API 读取记录，共用同一出口 IP 的访问者可能共同触发限制。
+  rateLimitExceededErrorHowCanFix: 如何恢复访问？
+  rateLimitExceededErrorFix: 等待 GitHub API 的请求额度恢复后，再刷新本页即可。
+  rateLimitExceededGeneratePAT: 了解 GitHub 访问令牌
+  rateLimitExceededHasSet: 浏览器已设置访问令牌。
+  rateLimitExceededRemoveToken: 移除令牌
+  rateLimitExceededGitHubPAT: GitHub 个人访问令牌
+  rateLimitExceededCopyPastePAT: 访问令牌
+  rateLimitExceededSaveToken: 保存令牌
+  errorTitle: 暂时无法加载
+  errorIntro: 获取最新状态记录时出现错误。
+  errorText: 请稍后刷新重试。
+  errorHome: 返回状态首页
+  pastScheduledMaintenance: 历史维护
+  scheduledMaintenance: 计划维护
+  scheduledMaintenanceSummaryStarted: "$DATE 开始，预计 $DURATION 分钟"
+  scheduledMaintenanceSummaryStarts: "计划 $DATE 开始，预计 $DURATION 分钟"
+  startedAt: 开始于
+  startsAt: 计划开始于
+  duration: 持续时间
+  durationMin: "$DURATION 分钟"
+  incidentCompleted: 已完成
+  incidentScheduled: 已安排
+  duration24H: 24 小时
+  duration7D: 7 天
+  duration30D: 30 天
+  duration1Y: 1 年
+  durationAll: 全部
+  url: 地址
+  status: 状态
+  history: 历史记录
+  responseTime: 响应时间
+  uptime: 可用率

@@ -1,0 +1,13 @@
+# Credentials belong in GitHub Actions Secrets, not in this public repository.
+.env
+.env.*
+*.pem
+*.key
+.secrets/
+.local/
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+site/
+__pycache__/

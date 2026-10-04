@@ -1,0 +1,12 @@
+{
+  "name": "yinwurealm-upptime-scheduler-tests",
+  "private": true,
+  "type": "module",
+  "author": "Soidraw",
+  "scripts": {
+    "test": "node --test worker.test.mjs worker.runtime.test.mjs"
+  },
+  "devDependencies": {
+    "miniflare": "4.20260730.0"
+  }
+}
